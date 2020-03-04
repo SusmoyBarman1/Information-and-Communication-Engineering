@@ -1,43 +1,26 @@
-N= 300;
-
-bits = [1 1 0 0 1 0 1 0 1 0 1 1];
-
-upVoltage = 5;
-downVoltage = -5;
-bitrate=5;
-
-bitLength = length(bits);
-t = 1:1/N:bitLength;
-
-streamLength = length(t);
+bits = [1 0 1 0 0 0 1 1 0];
 
 
-signal = zeros(1,bitrate);
+bitrate = 1;
+figure;
 
+n = 200;
+T = length(bits)/bitrate;
+N = n*length(bits);
 
-increment = streamLength/(2*bitLength);
+dt = T/N;
+t = 0:dt:T;
+x = zeros(1,length(t));
 
-incrementLength = int16(increment);
+for i = 0:length(bits)-1
+  if bits(i+1) == 1
+    x(i*n+1: (i+0.5)*n) = 5;
+  else
+    x(i*n+1: (i+0.5)*n) = -5;
+  end
+end
 
-k = 1;
-temp = 0;
-for i=1:bitLength
-    if(bits(i)==1);
-        for j=1:incrementLength
-            signal(k) = upVoltage; 
-            k = k + 1;
-        end;
-        k = k + incrementLength;
-    else
-        for j=1:incrementLength
-            signal(k) = downVoltage;
-            k = k + 1;
-        end;
-        k = k + incrementLength;
-    end;
-    
-end;
-
-signalLength = length(signal);
-
-plot(t,signal);
+plot(t,x,'LineWidth',3);
+axis([0 t(end) -10 10])
+grid on;
+title(['Polar RZ: [' num2str(bits) ']']);
